@@ -1,4 +1,4 @@
-
+import numpy as np
 
 #All relevant forces all placed here:
 F_prelaunch = np.array([[0], [0], [0]])
