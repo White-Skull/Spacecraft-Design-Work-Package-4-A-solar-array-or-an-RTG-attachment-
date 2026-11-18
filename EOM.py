@@ -9,4 +9,5 @@ Fx =
 Fy =
 Fz =
 
-F = np.array([[Fx], [Fy], [Fz]])
+F_external = np.array([[Fx], [Fy], [Fz]])
+F_reaction = -F_external
