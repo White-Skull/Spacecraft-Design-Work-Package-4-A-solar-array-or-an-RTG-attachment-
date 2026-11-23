@@ -1,70 +1,46 @@
-import math
-
-#diameter choices in mm (metric fasteners) hello
-METRIC = [3, 4, 5, 6, 8, 10, 12]
+METRIC = [3, 4, 5, 6, 8, 10, 12]   # candidate diameters [mm]
+N_LIST = (2, 3, 4)                 # fastener counts to try
 
 
-def fastener_designs(w, diameters=METRIC, edge_factor=2.0, min_n=2):
-    """
-    For a given plate width w, return every feasible (D2, n, s) combination.
-
-    Constraints (metal plate, single row):
-        2*D2 <= s <= 3*D2
-        e1 = e2 = edge_factor*D2   (>= 1.5*D2, nominal 2*D2)
-        w = (n-1)*s + e1 + e2      (spacing fills the width exactly)
-    """
-    if edge_factor < 1.5:
-        raise ValueError("Edge distance factor must be >= 1.5")
-
+def fill_designs(w, n_list=N_LIST, diameters=METRIC, edge_factor=2.0):
     designs = []
-    for D2 in diameters:
-        e = edge_factor * D2
-        usable = w - 2 * e
-        if usable < 0:
-            continue
-        s_min, s_max = 2 * D2, 3 * D2
-
-        n_max = int(math.floor(usable / s_min + 1e-9)) + 1
-        for n in range(max(min_n, 2), n_max + 1):
-            s = usable / (n - 1)
-            if s_min - 1e-9 <= s <= s_max + 1e-9:
-                designs.append({
-                    "D2": D2,
-                    "n": n,
-                    "s": s,
-                    "s_over_D2": s / D2,
-                    "e": e,
-                    # simple capacity proxy: total shear/bearing area ~ n*D2^2
-                    "score": n * D2 ** 2,
-                })
+    for n in n_list:
+        for D2 in diameters:
+            e = edge_factor * D2
+            s = (w - 2 * e) / (n - 1)
+            if 2 * D2 - 1e-9 <= s <= 3 * D2 + 1e-9:
+                designs.append({"n": n, "D2": D2, "s": s, "s_over_D2": s / D2,
+                                "e": e, "score": n * D2 ** 2})
     return designs
 
 
-def best_design(designs, criterion="score"):
-    """Pick the design with the highest score (n*D2^2) by default."""
+def show(w):
+    designs = fill_designs(w)
+    print(f"\nWidth w = {w:g} mm  (e1 = e2 = 2*D2)")
     if not designs:
-        return None
-    if criterion == "n":          # most fasteners, then largest diameter
-        return max(designs, key=lambda d: (d["n"], d["D2"]))
-    if criterion == "D2":         # largest diameter, then most fasteners
-        return max(designs, key=lambda d: (d["D2"], d["n"]))
-    return max(designs, key=lambda d: d["score"])
+        print("  No feasible pattern for 2/3/4 fasteners at this width.")
+        print("  Try a different width or add diameters to METRIC.")
+        return
+    print(f"{'n':>2} {'D2':>5} {'s':>7} {'s/D2':>6} {'e':>5} {'score':>7}")
+    for d in sorted(designs, key=lambda d: (d["n"], -d["score"])):
+        print(f"{d['n']:>2} {d['D2']:>5.1f} {d['s']:>7.2f} "
+              f"{d['s_over_D2']:>6.2f} {d['e']:>5.1f} {d['score']:>7.0f}")
+    best = max(designs, key=lambda d: d["score"])
+    print(f"Highest score: n = {best['n']}, D2 = {best['D2']} mm, "
+          f"s = {best['s']:.2f} mm, e = {best['e']:.1f} mm")
 
 
 if __name__ == "__main__":
-    w = 60.0   # change width [mm]
-
-    designs = fastener_designs(w, diameters=METRIC)
-
-    print(f"Plate width w = {w} mm, e1 = e2 = 2*D2\n")
-    print(f"{'D2 [mm]':>8} {'n':>3} {'s [mm]':>8} {'s/D2':>6} {'e [mm]':>7}")
-    for d in sorted(designs, key=lambda d: (d["D2"], d["n"])):
-        print(f"{d['D2']:>8.2f} {d['n']:>3} {d['s']:>8.2f} "
-              f"{d['s_over_D2']:>6.2f} {d['e']:>7.1f}")
-
-    best = best_design(designs)
-    if best:
-        print(f"\nSelected (max n*D2^2): D2 = {best['D2']} mm, "
-              f"n = {best['n']}, s = {best['s']:.2f} mm, e = {best['e']:.1f} mm")
-    else:
-        print("\nNo feasible combination - change the width or diameter list.")
+    print("Back-up plate fastener pattern. Type 'q' to quit.")
+    while True:
+        raw = input("\nEnter lug width in mm: ").strip().lower()
+        if raw in ("q", "quit", "exit"):
+            break
+        try:
+            w = float(raw)
+            if w <= 0:
+                raise ValueError
+        except ValueError:
+            print("Please enter a positive number.")
+            continue
+        show(w)
