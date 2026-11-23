@@ -5,9 +5,12 @@ import math
 x_cg = 0
 z_cg = 0
 D_1 = 8 # test number, not real, to be corrected
-D_2 = 8
-D_3 = 8
-D_4 = 8
+D_2 = 8 # test number, not real, to be corrected
+D_3 = 8# test number, not real, to be corrected
+D_4 = 8 # test number, not real, to be corrected
+
+W = 10 # test number, not real, to be corrected
+L = 20 # test number, not real, to be corrected
 
 upper_right_z = W/2 - e1 
 upper_left_z = W/2 - e1 
