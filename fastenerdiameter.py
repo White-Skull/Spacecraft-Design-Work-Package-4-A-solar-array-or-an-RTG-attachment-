@@ -1,5 +1,6 @@
 import math
 
+#diameter choices in mm (metric fasteners) hello
 METRIC = [3, 4, 5, 6, 8, 10, 12]
 
 
@@ -51,7 +52,7 @@ def best_design(designs, criterion="score"):
 
 
 if __name__ == "__main__":
-    w = 60.0   # given width [mm]
+    w = 60.0   # change width [mm]
 
     designs = fastener_designs(w, diameters=METRIC)
 
