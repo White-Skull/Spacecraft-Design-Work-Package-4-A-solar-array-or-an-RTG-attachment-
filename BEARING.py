@@ -12,6 +12,10 @@ D_4 = 8 # test number, not real, to be corrected
 W = 10 # test number, not real, to be corrected
 L = 20 # test number, not real, to be corrected
 
+t_2 = 3 # test number, not real, to be corrected
+sigma_lug = 814000000 # test number, not real, to be corrected
+sigma_wall = 814000000 # test number, not real, to be corrected
+
 upper_right_z = W/2 - e1 
 upper_left_z = W/2 - e1 
 lower_right_z = -W/2 + e1
@@ -52,6 +56,9 @@ z_force = 0.0 #test number, not real, to be corrected
 fasteners_num = 4 
 
 F_cg = math.sqrt(F_x**2 + F_z**2) # in plane force/ resultant force 
+
+
+# starting 4.7
 
 
 
