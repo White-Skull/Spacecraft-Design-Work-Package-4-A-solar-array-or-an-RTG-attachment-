@@ -1,4 +1,7 @@
 import numpy as np
+from scipy.optimize import minimize
+from scipy.interpolate import RegularGridInterpolator
+
 
 #All relevant forces all placed here
 #  (x being the direction of the launch vehicle (up positive), y being the solar panel axis (outwards positive), and z being the lateral
