@@ -30,26 +30,14 @@ sigma_y3 = 240e6
 x = coordinates[:, 0]
 z = coordinates[:, 1]
 
-xcg = np.mean(x)             # equal diameters -> area weighting cancels (eq. 4.1)
-dx = x - xcg                 # signed distance from CG; Mz varies the load with x
-
-
-def calculate_axial_loads(Fy, Mz, positions, D2):
-
-    pos = np.asarray(positions, dtype=float)
-
-    nf = len(pos)
-
-    x = pos[:, 0]
-    z = pos[:, 1]
+def calculate_axial_loads():
+    global Fy, Mz, x, z, nf, D2
 
     # All fasteners assumed same diameter
     A = np.pi * D2**2 / 4
 
     # Fastener group CG
     xcg = np.mean(x)
-    zcg = np.mean(z)
-
     dx = x - xcg
 
     # Direct axial force, equation 4.6
