@@ -1,4 +1,4 @@
-#ALL VALUES RN ARE PLACEHOLDERS, THEY DO NOT MATCH OUR DESIGN, PLEASE CHANGE ONCE WE HAVE THE DESIGN (AND CHECK UNITS MATCH)
+#ALL VALUES RN ARE PLACEHOLDERS, THEY DO NOT MATCH OUR DESIGN, PLEASE CHANGE ONCE WEE HAVE THE DESIGN
 import math
 import numpy as np
 
@@ -31,8 +31,7 @@ sigma_y3 = 240e6
 x = coordinates[:, 0]
 z = coordinates[:, 1]
 
-def calculate_axial_loads():
-    global Fy, Mz, x, z, nf, D2
+def calculate_axial_loads(Fy, Mz, x):
 
     # All fasteners assumed same diameter
     A = np.pi * D2**2 / 4
@@ -53,16 +52,10 @@ def calculate_axial_loads():
         )
 
     F_moment = Mz * dx / denominator
-
-    # Algebraic addition, as required in 4.8
     F_total = F_direct + F_moment
-
     return F_direct, F_moment, F_total
 
-
-# assignement 4.9 
-
-def pull_through(F_total, Dfi, Dfo, t, sigma_y):
+def pull_through(F_total, Dfi, Dfo, t, sigma_y, load_factor):
 
     if Dfi <= 0 or Dfo <= Dfi or t <= 0:
         raise ValueError("Invalid geometry")
@@ -89,6 +82,18 @@ def pull_through(F_total, Dfi, Dfo, t, sigma_y):
     MS = np.full(len(F_total), np.inf)
     loaded = tau > 0
     MS[loaded] = tau_yield / tau[loaded] - 1
-
     return sigma_normal, tau, MS
+
+F_direct, F_moment, F_total = calculate_axial_loads(Fy, Mz, x)
+
+sig2, tau2, MS2 = pull_through(F_total, Dfi_2, Dfo_2, t2, sigma_y2, load_factor)
+sig3, tau3, MS3 = pull_through(F_total, Dfi_3, Dfo_3, t3, sigma_y3, load_factor)
+
+print("Fastener | F_direct [N] | F_moment [N] | F_total [N] | tau lug [MPa] | tau wall [MPa] | MS lug | MS wall")
+for i in range(len(x)):
+    print(f"{i+1:8d} | {F_direct[i]:12.1f} | {F_moment[i]:12.1f} | {F_total[i]:11.1f} | "
+          f"{tau2[i]/1e6:13.2f} | {tau3[i]/1e6:14.2f} | {MS2[i]:6.2f} | {MS3[i]:7.2f}")
+
+print(f"\nMinimum lug MS : {np.min(MS2):.3f}  ->", "PASS" if np.all(MS2 >= 0) else "FAIL")
+print(f"Minimum wall MS: {np.min(MS3):.3f}  ->", "PASS" if np.all(MS3 >= 0) else "FAIL")
 
