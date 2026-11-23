@@ -2,8 +2,6 @@ import numpy as np
 import math 
 
 % 
-x_cg = 0
-z_cg = 0
 D_1 = 8 # test number, not real, to be corrected
 D_2 = 8 # test number, not real, to be corrected
 D_3 = 8# test number, not real, to be corrected
