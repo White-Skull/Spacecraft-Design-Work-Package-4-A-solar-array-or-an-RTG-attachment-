@@ -54,15 +54,32 @@ n_lugs = 2            # number of lugs (2 in your sketch)
 L      = 0.020        # [m] straight length from hole centre to backplate (from your drawing)
 e_D_min = 1.5         # minimum e/D requirement (check your own requirements)
 
-# Ultimate loads = limit load * factor of safety for that case.
-# F_tu and F_bru can differ per case (e.g. temperature-dependent properties).
-# ALL NUMBERS BELOW ARE PLACEHOLDERS: replace with your own.
-load_cases = [
-    {"name": "launch",   "P_axial": F_Launch[0][0], "P_trans": F_Launch[1][0], "F_tu": 310e6, "F_bru": 565e6},
-    {"name": "transfer", "P_axial": F_Transfer[0][0], "P_trans": F_Transfer[1][0], "F_tu": 310e6, "F_bru": 565e6},
-    {"name": "in_orbit", "P_axial": F_Mpo[0][0], "P_trans": F_Mpo[1][0], "F_tu": 280e6, "F_bru": 510e6},
-]
+# ---------------- MATERIAL (7075-T7351 plate, room temperature) ----------------
+# APPROXIMATE values: replace with MMPDS / course data before using in a report
+F_TU  = 480e6   # [Pa] ultimate tensile strength
+F_BRU = 740e6   # [Pa] ultimate bearing strength at e/D = 1.5 (matches e_D_min)
 
+# ---------------- FACTORS OF SAFETY ----------------
+# Set to the values your requirements specify for each case
+FS = {"launch": 1.25, "transfer": 1.25, "in_orbit": 1.25}   # PLACEHOLDERS
+
+# ---------------- LOAD CASES ----------------
+# Magnitudes are used (abs) because the capacity formulas take unsigned loads.
+# Assumes F_* entries are LIMIT loads in newtons.
+load_cases = [
+    {"name": "launch",
+     "P_axial": abs(F_Launch[0][0])   * FS["launch"],
+     "P_trans": abs(F_Launch[1][0])   * FS["launch"],
+     "F_tu": F_TU, "F_bru": F_BRU},
+    {"name": "transfer",
+     "P_axial": abs(F_Transfer[0][0]) * FS["transfer"],
+     "P_trans": abs(F_Transfer[1][0]) * FS["transfer"],
+     "F_tu": F_TU, "F_bru": F_BRU},
+    {"name": "in_orbit",
+     "P_axial": abs(F_Mpo[0][0])      * FS["in_orbit"],
+     "P_trans": abs(F_Mpo[1][0])      * FS["in_orbit"],
+     "F_tu": F_TU, "F_bru": F_BRU},   # reduce if the in-orbit temperature is extreme
+]
 # =====================================================================
 # 2. BRUHN CHART DATA (digitise from your edition of Bruhn, lug analysis)
 # =====================================================================
@@ -78,8 +95,8 @@ tD_tr = np.array([...])          # TODO
 K_tu_table = np.array([[...]])   # TODO: shape (len(eD_tr), len(tD_tr))
 
 # NET TENSION: K_t(W/D) for YOUR material group's curve
-WD_t   = np.array([1.5, 2.0, 3.0, 4.0])   # x-axis of chart (dummy grid)
-K_t_vals = np.array([0.0, 0.0, 0.0, 0.0]) # REPLACE with values read from the chart
+WD_t   = np.array([1.0, 1.5, 2.0, 3.0, 4.0])   # x-axis of chart (dummy grid)
+K_t_vals = np.array([1.0,0.88, 0.7, 0.48, 0.28]) # REPLACE with values read from the chart
 
 K_t_f = lambda r: np.interp(r, WD_t, K_t_vals)
 K_bru_f = RegularGridInterpolator((eD_ax, Dt_ax), K_bru_table, bounds_error=True)
