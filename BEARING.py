@@ -29,3 +29,10 @@ A_4 = math.pi * D_4**2 /4 # right lower
 
 x_cg = (A_1*upper_left_x + A_2*upper_right_x + A_3*lower_left_x + A_4*lower_right_x) / A_total
 z_cg = (A_1*upper_left_z + A_2*upper_right_z + A_3*lower_left_z + A_4*lower_right_z) / A_total
+
+
+print("TASK 4.5 RESULTS"/n)
+print(f"Total area = {A_total:.3f} mm^2")
+print(f"x_cg = {x_cg:.3f} mm")
+print(f"z_cg = {z_cg:.3f} mm")
+
