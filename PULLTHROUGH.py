@@ -27,3 +27,9 @@ t3 = 0.003           # Spacecraft wall
 sigma_y2 = 270e6
 sigma_y3 = 240e6
 
+x = coordinates[:, 0]
+z = coordinates[:, 1]
+
+xcg = np.mean(x)             # equal diameters -> area weighting cancels (eq. 4.1)
+dx = x - xcg                 # signed distance from CG; Mz varies the load with x
+
