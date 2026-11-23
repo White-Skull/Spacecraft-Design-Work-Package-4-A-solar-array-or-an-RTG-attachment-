@@ -1,4 +1,7 @@
 import numpy as np
+from scipy.optimize import minimize
+from scipy.interpolate import RegularGridInterpolator
+
 
 #All relevant forces all placed here
 #  (x being the direction of the launch vehicle (up positive), y being the solar panel axis (outwards positive), and z being the lateral
@@ -72,6 +75,11 @@ eD_tr = np.array([...])          # TODO
 tD_tr = np.array([...])          # TODO
 K_tu_table = np.array([[...]])   # TODO: shape (len(eD_tr), len(tD_tr))
 
+# NET TENSION: K_t(W/D) for YOUR material group's curve
+WD_t   = np.array([1.5, 2.0, 3.0, 4.0])   # x-axis of chart (dummy grid)
+K_t_vals = np.array([0.0, 0.0, 0.0, 0.0]) # REPLACE with values read from the chart
+
+K_t_f = lambda r: np.interp(r, WD_t, K_t_vals)
 K_bru_f = RegularGridInterpolator((eD_ax, Dt_ax), K_bru_table, bounds_error=True)
 K_tu_f  = RegularGridInterpolator((eD_tr, tD_tr), K_tu_table,  bounds_error=True)
 
@@ -84,21 +92,24 @@ def volume(x):
     return n_lugs * t * (np.pi * (w/2)**2 / 2 + w * L - np.pi * D**2 / 4)
 
 def margins_case(x, lc):
-    """Margins of safety [interaction, bearing] for one load case."""
     w, D, t = x
     e = w / 2
     A_br = D * t
+    A_t  = (w - D) * t
 
-    Pu_ax = K_bru_f([[e/D, D/t]])[0] * lc["F_tu"] * A_br   # axial ultimate capacity # Tension across net section
-    Pu_tr = K_tu_f([[e/D, t/D]])[0]  * lc["F_tu"] * A_br   # transverse ultimate capacity
+    P_bru = K_bru_f([[e/D, D/t]])[0] * lc["F_tu"] * A_br   # shear-out/bearing # Tension across net section
+    P_t   = K_t_f(w/D) * lc["F_tu"] * A_t                  # net-section tension
+    Pu_ax = min(P_bru, P_t)                                # governing axial capacity
 
-    Ra, Rtr = lc["P_axial"] / Pu_ax, lc["P_trans"] / Pu_tr
-    MS_int = 1.0 / (Ra**1.6 + Rtr**1.6)**0.625 - 1.0      # oblique load interaction
+    Pu_tr = K_tu_f(A_av(w, D, t) / A_br) * lc["F_tu"] * A_br
 
-    P_res  = np.hypot(lc["P_axial"], lc["P_trans"])        # resultant load on the pin
-    MS_brg = lc["F_bru"] * A_br / P_res - 1.0              # pin bearing
+    Ra, Rtr = lc["P_axial"]/Pu_ax, lc["P_trans"]/Pu_tr
+    MS_int = 1.0/(Ra**1.6 + Rtr**1.6)**0.625 - 1.0
 
-    return [MS_int, MS_brg]
+    P_res  = np.hypot(lc["P_axial"], lc["P_trans"])
+    MS_brg = lc["F_bru"]*A_br/P_res - 1.0
+    MS_t   = P_t/lc["P_axial"] - 1.0                       # explicit net-tension margin
+    return [MS_int, MS_brg, MS_t]
 
 def margins(x):
     """All constraints stacked in one vector; every entry must be >= 0."""

@@ -40,5 +40,19 @@ print(f"z_cg = {z_cg:.3f} mm")
 
 # starting 4.6 
 
+#acc forces and moments 
 F_x = 60 # test number, not real, to be corrected
 F_z = 60 # test number, not real, to be corrected
+M_y = 60 # test number, not real, to be corrected
+
+#force position 
+x_force = 0.0 #test number, not real, to be corrected
+z_force = 0.0 #test number, not real, to be corrected
+
+fasteners_num = 4 
+
+F_cg = math.sqrt(F_x**2 + F_z**2) # in plane force/ resultant force 
+
+
+
+
