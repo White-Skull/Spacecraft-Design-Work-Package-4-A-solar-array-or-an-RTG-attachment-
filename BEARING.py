@@ -27,6 +27,8 @@ A_2 = math.pi * D_2**2 /4 # Right upper
 A_3 = math.pi * D_3**2 /4 # left lower
 A_4 = math.pi * D_4**2 /4 # right lower
 
+A_total = A_1 + A_2 + A_3 + A_3 
+
 x_cg = (A_1*upper_left_x + A_2*upper_right_x + A_3*lower_left_x + A_4*lower_right_x) / A_total
 z_cg = (A_1*upper_left_z + A_2*upper_right_z + A_3*lower_left_z + A_4*lower_right_z) / A_total
 
@@ -36,3 +38,7 @@ print(f"Total area = {A_total:.3f} mm^2")
 print(f"x_cg = {x_cg:.3f} mm")
 print(f"z_cg = {z_cg:.3f} mm")
 
+# starting 4.6 
+
+F_x = 60 # test number, not real, to be corrected
+F_z = 60 # test number, not real, to be corrected
