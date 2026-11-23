@@ -37,14 +37,6 @@ print("Total MPO Moments: ", M_Mpo)
 # w, t1, D1, h, t2, D2 of the lug
 
 
-
-
-P_u  = k_u * F_tu * A_t
-
-# Shear Out-bearing strength
-
-# 
-
 # =====================================================================
 # 1. INPUTS
 # =====================================================================
@@ -67,13 +59,14 @@ load_cases = [
 # These MUST be filled in before running; the "..." placeholders will crash.
 # Axial chart:      K_bru as a function of e/D and D/t
 # Transverse chart: K_tu  as a function of e/D and t/D
-eD_ax = np.array([...])          # TODO: e/D grid points (ascending)
+eD_ax = np.arange(0.5, 1, 0.1)  + np.arange(1.2, 4.0, 0.2)      # TODO: e/D grid points (ascending)
+print("eD_ax: ", eD_ax)
 Dt_ax = np.array([...])          # TODO: D/t grid points (ascending)
 K_bru_table = np.array([[...]])  # TODO: shape (len(eD_ax), len(Dt_ax))
 
 eD_tr = np.array([...])          # TODO
 tD_tr = np.array([...])          # TODO
-K_tu_table = np.array([[...]])   # TODO: shape (len(eD_tr), len(tD_tr))
+K_bry_table = np.array([[...]])   # TODO: shape (len(eD_tr), len(tD_tr))
 
 # NET TENSION: K_t(W/D) for YOUR material group's curve
 WD_t   = np.array([1.5, 2.0, 3.0, 4.0])   # x-axis of chart (dummy grid)
@@ -81,7 +74,7 @@ K_t_vals = np.array([0.0, 0.0, 0.0, 0.0]) # REPLACE with values read from the ch
 
 K_t_f = lambda r: np.interp(r, WD_t, K_t_vals)
 K_bru_f = RegularGridInterpolator((eD_ax, Dt_ax), K_bru_table, bounds_error=True)
-K_tu_f  = RegularGridInterpolator((eD_tr, tD_tr), K_tu_table,  bounds_error=True)
+K_bry_f  = RegularGridInterpolator((eD_tr, tD_tr), K_tu_table,  bounds_error=True)
 
 # =====================================================================
 # 3. MODEL
@@ -97,9 +90,8 @@ def margins_case(x, lc):
     A_br = D * t
     A_t  = (w - D) * t
 
-    P_bru = K_bru_f([[e/D, D/t]])[0] * lc["F_tu"] * A_br   # shear-out/bearing # Tension across net section
-    P_t   = K_t_f(w/D) * lc["F_tu"] * A_t                  # net-section tension
-    Pu_ax = min(P_bru, P_t)                                # governing axial capacity
+    Pu_ax = K_bru_f([[e/D, D/t]])[0] * lc["F_tu"] * A_br   # axial ultimate capacity
+    Pu_tr = K_tu_f([[e/D, t/D]])[0]  * lc["F_tu"] * A_br   # transverse ultimate capacity
 
     Pu_tr = K_tu_f(A_av(w, D, t) / A_br) * lc["F_tu"] * A_br
 
