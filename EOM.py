@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.optimize import minimize
 
 #All relevant forces all placed here
 #  (x being the direction of the launch vehicle (up positive), y being the solar panel axis (outwards positive), and z being the lateral
@@ -31,4 +32,15 @@ print("Total MPO Forces: ", F_Mpo)
 print("Total MPO Moments: ", M_Mpo)
 #Bruhn analysis to determine geometrical parameters:
 # w, t1, D1, h, t2, D2 of the lug
+
+
+# Tension across net section
+k_u = 0.85
+F_tu = 400 * 10**6 #Pa
+A_t = 0.0001 #m^2
+P_u  = k_u * F_tu * A_t
+
+# Shear Out-bearing strength
+
+# 
 
