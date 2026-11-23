@@ -11,13 +11,13 @@ D_4 = 8
 
 upper_right_z = W/2 - e1 
 upper_left_z = W/2 - e1 
-lower_right_z = -W/2 - e1
-lower_left_z = -W/2 - e1
+lower_right_z = -W/2 + e1
+lower_left_z = -W/2 + e1
 
-upper_right_x = -W/2 - e2 
-upper_left_x = W/2 - e2 
-lower_right_x = -W/2 - e2
-lower_left_x = W/2 - e2
+upper_right_x = -L/2 + e2 
+upper_left_x = L/2 - e2 
+lower_right_x = -L/2 + e2
+lower_left_x = L/2 - e2
 
 A_1 = math.pi * D_1**2 /4
 A_2 = math.pi * D_2**2 /4
