@@ -67,13 +67,13 @@ F_prelaunch = np.array([-382.165, 0.0, 0.0])
 F_dynamiclaunch = np.array([2295.54, 688.67, 688.67])
 F_transferburn = np.array([0.29, 0.0, 0.0])
 F_micrometeoroid = np.array([0.0, 0.0, 23.0])
-F_actuation = np.array([0.0, 0.0, 0.0])
+F_actuation = np.array([7.46, 0.0, 3.71])
 
 M_prelaunch = np.array([0.0, 0.0, 707.3])
 M_dynamiclaunch = np.array([1274.02, 0.0, -4246.75])
 M_transferburn = np.array([0.0, 0.0, -0.5365])
 M_micrometeoroid = np.array([44.75, 42.55, 0.0])
-M_actuation = np.array([0.0, 0.0, 0.0])
+M_actuation = np.array([9.72, 11.15, 41.26])
 
 INCLUDE_PRELAUNCH_IN_LAUNCH = False   # A4: QSL factors normally already include 1 g
 
