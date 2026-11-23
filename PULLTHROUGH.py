@@ -33,3 +33,39 @@ z = coordinates[:, 1]
 xcg = np.mean(x)             # equal diameters -> area weighting cancels (eq. 4.1)
 dx = x - xcg                 # signed distance from CG; Mz varies the load with x
 
+
+def calculate_axial_loads(Fy, Mz, positions, D2):
+
+    pos = np.asarray(positions, dtype=float)
+
+    nf = len(pos)
+
+    x = pos[:, 0]
+    z = pos[:, 1]
+
+    # All fasteners assumed same diameter
+    A = np.pi * D2**2 / 4
+
+    # Fastener group CG
+    xcg = np.mean(x)
+    zcg = np.mean(z)
+
+    dx = x - xcg
+
+    # Direct axial force, equation 4.6
+    F_direct = np.full(nf, Fy / nf)
+
+    # Moment contribution (bending about z-axis)
+    denominator = np.sum(dx**2)
+
+    if denominator <= 0:
+        raise ValueError(
+            "Fastener pattern cannot resist Mz"
+        )
+
+    F_moment = Mz * dx / denominator
+
+    # Algebraic addition, as required in 4.8
+    F_total = F_direct + F_moment
+
+    return F_direct, F_moment, F_total
