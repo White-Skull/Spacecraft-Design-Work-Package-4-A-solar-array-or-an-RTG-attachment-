@@ -34,10 +34,8 @@ print("Total MPO Moments: ", M_Mpo)
 # w, t1, D1, h, t2, D2 of the lug
 
 
-# Tension across net section
-k_u = 0.85
-F_tu = 400 * 10**6 #Pa
-A_t = 0.0001 #m^2
+
+
 P_u  = k_u * F_tu * A_t
 
 # Shear Out-bearing strength
@@ -91,7 +89,7 @@ def margins_case(x, lc):
     e = w / 2
     A_br = D * t
 
-    Pu_ax = K_bru_f([[e/D, D/t]])[0] * lc["F_tu"] * A_br   # axial ultimate capacity
+    Pu_ax = K_bru_f([[e/D, D/t]])[0] * lc["F_tu"] * A_br   # axial ultimate capacity # Tension across net section
     Pu_tr = K_tu_f([[e/D, t/D]])[0]  * lc["F_tu"] * A_br   # transverse ultimate capacity
 
     Ra, Rtr = lc["P_axial"] / Pu_ax, lc["P_trans"] / Pu_tr
