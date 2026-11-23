@@ -1,3 +1,4 @@
+#ALL VALUES RN ARE PLACEHOLDERS, THEY DO NOT MATCH OUR DESIGN, PLEASE CHANGE ONCE WE HAVE THE DESIGN (AND CHECK UNITS MATCH)
 import math
 import numpy as np
 
@@ -57,3 +58,37 @@ def calculate_axial_loads():
     F_total = F_direct + F_moment
 
     return F_direct, F_moment, F_total
+
+
+# assignement 4.9 
+
+def pull_through(F_total, Dfi, Dfo, t, sigma_y):
+
+    if Dfi <= 0 or Dfo <= Dfi or t <= 0:
+        raise ValueError("Invalid geometry")
+
+    # Only tensile loads cause tensile pull-through
+    F_tension = np.maximum(F_total, 0)
+
+    # Area under fastener head/nut
+    A_contact = np.pi / 4 * (Dfo**2 - Dfi**2)
+
+    # Average normal contact stress
+    sigma_normal = F_tension / A_contact
+
+    # Cylindrical shear area
+    A_shear = np.pi * Dfi * t
+
+    # Applied shear stress
+    tau = load_factor * F_tension / A_shear
+
+    # Shear yield from von Mises
+    tau_yield = sigma_y / np.sqrt(3)
+
+    # Margin of safety
+    MS = np.full(len(F_total), np.inf)
+    loaded = tau > 0
+    MS[loaded] = tau_yield / tau[loaded] - 1
+
+    return sigma_normal, tau, MS
+

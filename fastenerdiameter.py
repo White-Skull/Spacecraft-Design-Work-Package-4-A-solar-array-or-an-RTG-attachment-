@@ -1,8 +1,8 @@
-METRIC = [3, 4, 5, 6, 8, 10, 12]   # candidate diameters [mm]
+DIA = [3, 4, 5, 6, 8, 10, 12]   # candidate diameters [mm]
 N_LIST = (2, 3, 4)                 # fastener counts to try
 
 
-def fill_designs(w, n_list=N_LIST, diameters=METRIC, edge_factor=2.0):
+def fill_designs(w, n_list=N_LIST, diameters=DIA, edge_factor=2.0):
     designs = []
     for n in n_list:
         for D2 in diameters:
@@ -19,7 +19,7 @@ def show(w):
     print(f"\nWidth w = {w:g} mm  (e1 = e2 = 2*D2)")
     if not designs:
         print("  No feasible pattern for 2/3/4 fasteners at this width.")
-        print("  Try a different width or add diameters to METRIC.")
+        print("  Try a different width or add diameters to DIA.")
         return
     print(f"{'n':>2} {'D2':>5} {'s':>7} {'s/D2':>6} {'e':>5} {'score':>7}")
     for d in sorted(designs, key=lambda d: (d["n"], -d["score"])):
