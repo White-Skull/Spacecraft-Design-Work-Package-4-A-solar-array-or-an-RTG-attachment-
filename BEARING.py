@@ -45,7 +45,6 @@ print(f"z_cg = {z_cg:.3f} mm")
 #acc forces and moments 
 F_x = 60 # test number, not real, to be corrected
 F_z = 60 # test number, not real, to be corrected
-M_y = 60 # test number, not real, to be corrected
 
 #force position 
 x_force = 0.0 #test number, not real, to be corrected
@@ -55,9 +54,31 @@ fasteners_num = 4
 
 F_cg = math.sqrt(F_x**2 + F_z**2) # in plane force/ resultant force 
 
+#positive is ccw 
+M_y = F_z(x_cg -(R+t_1)/2) + F_x(z_cg)
+
+F_cgx = F_x
+F_cgy = F_y
+
+F_inplane_x = F_cgx/fasteners_num 
+F_inplane_y = F_cgy/fasteners_num 
+
+r_1 = math.sqrt(upper_left_x**2+upper_left_z**2)
+r_2 = math.sqrt(upper_right_x**2+upper_right_z**2)
+r_3 = math.sqrt(lower_left_x**2+lower_left_z**2)
+r_4 = math.sqrt(lower_right_x**2+lower_right_z**2)
+
+F_inplane_M_1 = M_y*A_1*r_1/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
+F_inplane_M_2 = M_y*A_2*r_2/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
+F_inplane_M_3 = M_y*A_3*r_3/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
+F_inplane_M_4 = M_y*A_4*r_4/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
+
+
+
+
+
 
 # starting 4.7
-hsfaoaggad0
 
 
 
