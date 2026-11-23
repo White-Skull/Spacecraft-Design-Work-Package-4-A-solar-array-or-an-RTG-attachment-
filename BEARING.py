@@ -57,6 +57,7 @@ F_cg = math.sqrt(F_x**2 + F_z**2) # in plane force/ resultant force
 
 
 # starting 4.7
+hsfaoaggad0
 
 
 
