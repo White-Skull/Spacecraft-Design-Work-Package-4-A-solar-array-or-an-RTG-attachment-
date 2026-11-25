@@ -13,7 +13,7 @@ coordinates = np.array ([
     [0.1, 0.1]])
 nf = len(coordinates)
 
-D2 = 0.005            # Fastener diameter [m]
+D2 = 0.006            # Fastener diameter [m]
 Dfi_2 = 0.006        # Inboard diameter, lug side
 Dfi_3 = 0.006        # Inboard diameter, wall side
 Dfo_2 = 0.012        # Outer head diameter
