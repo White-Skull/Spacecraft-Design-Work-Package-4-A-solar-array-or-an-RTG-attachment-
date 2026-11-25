@@ -60,7 +60,7 @@ class LugDesign:
     wall_E_mpa: float = _in(68_900.0, "MPa")
     wall_cte: float = _in(23.6e-6, "1/K")
     wall_yield_mpa: float = _in(240.0, "MPa")
-    wall_thickness_mm: float = _in(3.0, "mm")
+    wall_thickness_mm: float = _in(10.0, "mm")
 
     # INPUTS: loads, environment, policy (applied at plate centre)
     Fx_n: float = _in(800.0, "N")      # in-plane
