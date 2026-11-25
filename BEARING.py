@@ -135,6 +135,6 @@ MS_min = min(MS_1, MS_2, MS_3, MS_4)
 print(f"\nMinimum margin of safety = {MS_min:.3f}")
 
 if MS_min >= 0:
-    print("BACKPLATE PASSES BEARING CHECK")
+    print("BACKPLATE PASSES BEARING CHECK, iterate to reduce thickness")
 else:
-    print("BACKPLATE FAILS BEARING CHECK")
+    print("BACKPLATE FAILS BEARING CHECK, iteration needed")
