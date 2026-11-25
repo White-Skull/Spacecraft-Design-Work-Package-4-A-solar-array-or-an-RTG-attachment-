@@ -55,7 +55,7 @@ fasteners_num = 4
 F_cg = math.sqrt(F_x**2 + F_z**2) # in plane force/ resultant force 
 
 #positive is ccw 
-M_y = F_z(x_cg -(R+t_1)/2) + F_x(z_cg)
+M_y = -F_z(x_cg -(R+t_1)/2) + F_x(z_cg)
 
 F_cgx = F_x
 F_cgy = F_y
@@ -73,13 +73,68 @@ F_inplane_M_2 = M_y*A_2*r_2/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
 F_inplane_M_3 = M_y*A_3*r_3/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
 F_inplane_M_4 = M_y*A_4*r_4/(A_1*r_1**2+A_2*r_2**2+A_3*r_3**2+A_4*r_4**2)
 
-
-
-
-
-
 # starting 4.7
+x_1 = upper_left_x
+x_2 = upper_right_x
+x_3 = lower_left_x
+x_4 = lower_right_x
+z_1 =upper_left_z
+z_2 =upper_right_z
+z_3 =lower_left_z
+z_4 =lower_right_z
 
 
+F_M_x_1 = F_inplane_M_1*(x_1-x_cg)/r_1
+F_M_z_1 = F_inplane_M_1*(z_1-z_cg)/r_1
 
+F_M_x_2 = F_inplane_M_2*(x_2-x_cg)/r_2
+F_M_z_2 = F_inplane_M_2*(z_2-z_cg)/r_2
 
+F_M_x_3 = F_inplane_M_3*(x_3-x_cg)/r_3
+F_M_z_3 = F_inplane_M_3*(z_3-z_cg)/r_3
+
+F_M_x_4 = F_inplane_M_4*(x_4-x_cg)/r_4
+F_M_z_4 = F_inplane_M_4*(z_4-z_cg)/r_4
+
+P_1 = math.sqrt((F_inplane_x+F_M_x_1)**2+(F_inplane_z+F_M_z_1)**2)
+P_2 = math.sqrt((F_inplane_x+F_M_x_2)**2+(F_inplane_z+F_M_z_2)**2)
+P_3 = math.sqrt((F_inplane_x+F_M_x_3)**2+(F_inplane_z+F_M_z_3)**2)
+P_4 = math.sqrt((F_inplane_x+F_M_x_4)**2+(F_inplane_z+F_M_z_4)**2)
+
+bearing_stress_1 = P_1/(D_1*t_2)
+bearing_stress_2 = P_2/(D_2*t_2)
+bearing_stress_3 = P_3/(D_3*t_2)
+bearing_stress_4 = P_4/(D_4*t_2)
+
+SF = 1.5 # test number, not real, to be corrected
+Fty=503 # in MPa
+
+MS_1 = Fty / (SF * bearing_stress_1) - 1
+MS_2 = Fty / (SF * bearing_stress_2) - 1
+MS_3 = Fty / (SF * bearing_stress_3) - 1
+MS_4 = Fty / (SF * bearing_stress_4) - 1
+
+print("\nTASK 4.7 RESULTS")
+
+print(f"Fastener 1: Bearing stress = {bearing_stress_1:.3f} MPa, MS = {MS_1:.3f}")
+print(f"Fastener 2: Bearing stress = {bearing_stress_2:.3f} MPa, MS = {MS_2:.3f}")
+print(f"Fastener 3: Bearing stress = {bearing_stress_3:.3f} MPa, MS = {MS_3:.3f}")
+print(f"Fastener 4: Bearing stress = {bearing_stress_4:.3f} MPa, MS = {MS_4:.3f}")
+
+# Determine whether each fastener passes
+print("\nBEARING FAILURE CHECK")
+
+print("Fastener 1:", "PASS" if MS_1 >= 0 else "FAIL")
+print("Fastener 2:", "PASS" if MS_2 >= 0 else "FAIL")
+print("Fastener 3:", "PASS" if MS_3 >= 0 else "FAIL")
+print("Fastener 4:", "PASS" if MS_4 >= 0 else "FAIL")
+
+# Find critical fastener
+MS_min = min(MS_1, MS_2, MS_3, MS_4)
+
+print(f"\nMinimum margin of safety = {MS_min:.3f}")
+
+if MS_min >= 0:
+    print("BACKPLATE PASSES BEARING CHECK, iterate to reduce thickness")
+else:
+    print("BACKPLATE FAILS BEARING CHECK, iteration needed")
