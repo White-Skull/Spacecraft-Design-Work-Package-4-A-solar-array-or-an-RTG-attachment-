@@ -4,7 +4,7 @@ import numpy as np
 
 
 Fy = 688.67
-Mz = 300.0
+Mz = -4246.75
 load_factor = 1.0
 
 coordinates = np.array ([
