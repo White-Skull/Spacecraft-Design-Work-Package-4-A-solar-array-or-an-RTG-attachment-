@@ -53,7 +53,7 @@ class LugDesign:
     bolt_yield_mpa: float = _in(590.0, "MPa")
     bolt_diameter_mm: float = _in(6.0, "mm")
     bolt_head_diameter_mm: float = _in(10.0, "mm")
-    n_bolts: int = _mid(0)
+    n_bolts: int = _mid(4)
 
     # INPUTS: spacecraft wall (not part of the design, but lives here)
     wall_material: str = _in("Al 6061-T6 facesheet")
