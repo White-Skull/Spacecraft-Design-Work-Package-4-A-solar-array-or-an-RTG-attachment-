@@ -70,7 +70,7 @@ F_micrometeoroid = np.array([0.0, 0.0, 23.0])
 F_actuation = np.array([7.46, 0.0, 3.71])
 
 F_resultant = F_prelaunch + F_dynamiclaunch + F_transferburn + F_micrometeoroid + F_actuation
-print("Total resultant forces [N]: ", F_resultant)
+print("Total resultant forces: ", F_resultant)
 
 M_prelaunch = np.array([0.0, 0.0, 707.3])
 M_dynamiclaunch = np.array([1274.02, 0.0, -4246.75])
