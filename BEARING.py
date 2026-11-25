@@ -106,4 +106,4 @@ bearing_stress_2 = P_2/(D_2*t_2)
 bearing_stress_3 = P_3/(D_3*t_2)
 bearing_stress_4 = P_4/(D_4*t_2)
 
-
+SF = 1.5 # test number, not real, to be corrected
