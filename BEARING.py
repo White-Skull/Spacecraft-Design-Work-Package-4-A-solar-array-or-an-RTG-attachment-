@@ -101,4 +101,9 @@ P_2 = math.sqrt((F_inplane_x+F_M_x_2)**2+(F_inplane_z+F_M_z_2)**2)
 P_3 = math.sqrt((F_inplane_x+F_M_x_3)**2+(F_inplane_z+F_M_z_3)**2)
 P_4 = math.sqrt((F_inplane_x+F_M_x_4)**2+(F_inplane_z+F_M_z_4)**2)
 
+bearing_stress_1 = P_1/(D_1*t_2)
+bearing_stress_2 = P_2/(D_2*t_2)
+bearing_stress_3 = P_3/(D_3*t_2)
+bearing_stress_4 = P_4/(D_4*t_2)
+
 
