@@ -69,11 +69,17 @@ F_transferburn = np.array([0.29, 0.0, 0.0])
 F_micrometeoroid = np.array([0.0, 0.0, 23.0])
 F_actuation = np.array([7.46, 0.0, 3.71])
 
+F_resultant = F_prelaunch + F_dynamiclaunch + F_transferburn + F_micrometeoroid + F_actuation
+print("Total resultant forces [N]: ", F_resultant)
+
 M_prelaunch = np.array([0.0, 0.0, 707.3])
 M_dynamiclaunch = np.array([1274.02, 0.0, -4246.75])
 M_transferburn = np.array([0.0, 0.0, -0.5365])
 M_micrometeoroid = np.array([44.75, 42.55, 0.0])
 M_actuation = np.array([9.72, 11.15, 41.26])
+
+M_resultant = M_prelaunch + M_dynamiclaunch + M_transferburn + M_micrometeoroid + M_actuation
+print("Total resultant moments [Nm]: ", M_resultant)
 
 INCLUDE_PRELAUNCH_IN_LAUNCH = False   # A4: QSL factors normally already include 1 g
 
@@ -96,8 +102,8 @@ LOAD_CASES = [
 # --- Attachment configuration (from 4.2) ----------------------------------------
 HINGE_AXIS = "x"      # axis of the pin / hinge: "x" or "z"  <-- CHECK against your 4.2
 N_FLANGES = 2         # flanges sharing the load (double lug = 2)
-D_COUPLE = 0.10       # [m] distance between the flanges' centre-planes (couple arm) <-- your h + t
-L_ROOT_MIN = 0.020    # [m] hole centre to backplate (from your drawing); A13 uses max(L, e)
+D_COUPLE = 0.1       # [m] distance between the flanges' centre-planes (couple arm) <-- your h + t  ### Initial guess of optimization program ###
+L_ROOT_MIN = 0.020    # [m] hole centre to backplate (from your drawing); A13 uses max(L, e)  ### Initial guess of optimization program ###
 
 # --- Safety factors -----------------------------------------------------------------
 # ECSS-E-ST-32-10 (metallic parts, verification by analysis only): FOSY 1.25, FOSU 2.0.
@@ -134,7 +140,7 @@ MATERIALS = {
                                     ktu_curve=[(1.0*INCH, "1")]),
 }
 
-# Pin material (Ti-6Al-4V annealed, typical)
+# Pin material (Ti-6Al-4V annealed, typical)  ### TODO: replace with own pin material if different (check sources) ###
 PIN = dict(name="Ti-6Al-4V", Fty=880e6, Fsu=550e6)
 
 # =============================================================================
@@ -335,7 +341,7 @@ def run(verbose=True):
         cases.append(dict(lc, flange=flange_loads(lc["F"], lc["M"])))
 
     if verbose:
-        print("=" * 78)
+        print("=" * 85)
         print(f"Hinge axis: {HINGE_AXIS}   flanges: {N_FLANGES}   couple arm d = {D_COUPLE*1e3:.0f} mm")
         print(f"FOS_Y = {FOS_Y}, FOS_U = {FOS_U}, fitting factor = {FITTING}")
         print("Limit loads on the most loaded flange:")
