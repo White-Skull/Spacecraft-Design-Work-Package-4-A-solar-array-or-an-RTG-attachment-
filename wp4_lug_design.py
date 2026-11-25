@@ -104,7 +104,7 @@ LOAD_CASES = [
     {"name": "in-orbit",
      "F": F_micrometeoroid + F_actuation,
      "M": M_micrometeoroid + M_actuation,
-     "strength_factor": 1.0},   # TODO: knock-down for Mercury orbit temperature
+     "strength_factor": 1.0},   ### TODO: reduce for Mercury orbit temperature (do in 4.11) ###
 ]
 
 # --- Attachment configuration (from 4.2) ----------------------------------------
@@ -113,14 +113,13 @@ N_LUGS = 2            # report Table 2.2: two double lugs
 FLANGES_PER_LUG = 2   # double lug
 N_FLANGES = N_LUGS * FLANGES_PER_LUG
 H_GAP = 0.031         # [m] gap between the two flanges of one lug: 30 mm panel + 1 mm clearance (report 4.2)
-D_LUGS = 0.10         # [m] distance between the centres of the two lugs (couple arm)
-                      #     NOT in the report yet - fixed input, not optimised. Choose it in 4.2.
-L_ROOT_MIN = 0.020    # [m] hole centre to backplate (from your drawing); fixed input, A13 uses max(L, e)
+D_LUGS = 0.10         # [m] distance between the centres of the two lugs (couple arm) ### TODO: not in the report yet - fixed input, not optimised. Choose it in 4.2. ###                   
+L_ROOT_MIN = 0.020    # [m] hole centre to backplate (from your drawing); fixed input, A13 uses max(L, e) ### TODO: not in the report yet - fixed input, not optimised. ###
 
 # --- Safety factors -----------------------------------------------------------------
 # ECSS-E-ST-32-10 (metallic parts, verification by analysis only): FOSY 1.25, FOSU 2.0.
 # If the structure is qualified by test: FOSY 1.1, FOSU 1.25. Verify against the standard.
-FOS_Y = 1.25
+FOS_Y = 1.25 ### TODO: justify safety factors in the report (ECSS-E-ST-32-10, metallic parts, verification by analysis only) ###
 FOS_U = 2.0
 FITTING = 1.15        # fitting factor (Bruhn notes: extra M.S. of 0.15 for fittings)
 CHECK_ULTIMATE = True  # also require the ultimate Bruhn check (recommended)
@@ -129,7 +128,7 @@ CHECK_ULTIMATE = True  # also require the ultimate Bruhn check (recommended)
 D_RANGE = np.arange(3.0, 40.01, 0.5) * 1e-3     # pin / hole diameter D1 [m]
 T_RANGE = np.arange(1.0, 25.41, 0.25) * 1e-3    # flange thickness t1 [m] (<= 1 in, chart limit)
 ED_RANGE = np.arange(0.60, 2.501, 0.02)          # e/D  (W/D = 2 e/D <= 5, chart limit)
-E_D_MIN = 1.5         # minimum e/D you require (your earlier script used 1.5); Bruhn allows 0.5
+E_D_MIN = 0.5         # minimum e/D you require; Bruhn allows 0.5 ### TODO: Validate physical constraints ###
 
 # --- Materials ------------------------------------------------------------------------
 # Typical room-temperature values (ASM/MatWeb). Replace with MMPDS A/B-basis values if
