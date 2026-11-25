@@ -128,7 +128,7 @@ CHECK_ULTIMATE = True  # also require the ultimate Bruhn check (recommended)
 D_RANGE = np.arange(3.0, 40.01, 0.5) * 1e-3     # pin / hole diameter D1 [m]
 T_RANGE = np.arange(1.0, 25.41, 0.25) * 1e-3    # flange thickness t1 [m] (<= 1 in, chart limit)
 ED_RANGE = np.arange(0.60, 2.501, 0.02)          # e/D  (W/D = 2 e/D <= 5, chart limit)
-E_D_MIN = 0.5         # minimum e/D you require; Bruhn allows 0.5 ### TODO: Validate physical constraints ###
+E_D_MIN = 0.5       # minimum e/D you require; Bruhn allows 0.5 ### TODO: Validate physical constraints ###
 
 # --- Materials ------------------------------------------------------------------------
 # Typical room-temperature values (ASM/MatWeb). Replace with MMPDS A/B-basis values if
@@ -345,7 +345,6 @@ def evaluate(mat, D, t, eD, cases):
             ku * fl["P_ax"] / Pax_allow_u, ku * fl["P_tr"] / Ptr_allow_u))
         tau_u = ku * fl["P"] / (np.pi * D**2 / 4)
         ms["pin_ult"] = np.minimum(ms["pin_ult"], PIN["Fsu"] / tau_u - 1)
-
     res["ms"] = ms
     res["below_curve10"] = Ktu < k_tu("10", X)   # Fig D1.15 note: check as cantilever
     res["factors"] = dict(Kt=Kt, Kbry=Kbry, Kty=Kty, Kbr=Kbr, Ktu=Ktu, X=X)
@@ -396,6 +395,9 @@ def run(verbose=True):
             below_curve10=bool(r["below_curve10"][i]))
 
     if verbose:
+        print("\n\n" + "=" * 42 + " RAW DATA " + "=" * 42)
+        print(results[name])
+        print("=" * 94)
         print("\nLightest feasible design per material (all margins >= 0):")
         hdr = (f"  {'material':25s}{'D1':>7s}{'t1':>7s}{'w':>7s}{'e/D':>6s}{'L':>6s}"
                f"{'mass':>8s}  {'MS: lug_y':>9s}{'lug_u':>7s}{'root':>7s}{'pin_y':>7s}{'pin_u':>7s}")
