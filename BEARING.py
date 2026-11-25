@@ -114,7 +114,6 @@ MS_2 = Fty / (SF * bearing_stress_2) - 1
 MS_3 = Fty / (SF * bearing_stress_3) - 1
 MS_4 = Fty / (SF * bearing_stress_4) - 1
 
-print("\nTASK 4.7 RESULTS")
 
 print(f"Fastener 1: Bearing stress = {bearing_stress_1:.3f} MPa, MS = {MS_1:.3f}")
 print(f"Fastener 2: Bearing stress = {bearing_stress_2:.3f} MPa, MS = {MS_2:.3f}")
