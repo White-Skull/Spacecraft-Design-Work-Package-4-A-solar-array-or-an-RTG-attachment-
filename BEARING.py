@@ -55,7 +55,7 @@ fasteners_num = 4
 F_cg = math.sqrt(F_x**2 + F_z**2) # in plane force/ resultant force 
 
 #positive is ccw 
-M_y = -F_z(x_cg -(R+t_1)/2) + F_x(z_cg)
+M_y = F_z(x_cg) - F_x(z_cg)
 
 F_cgx = F_x
 F_cgy = F_y
