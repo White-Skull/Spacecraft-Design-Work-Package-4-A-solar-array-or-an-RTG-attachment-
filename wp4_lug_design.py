@@ -26,9 +26,10 @@ Coordinate system (same as your 4.1 script):
   (x or z); the remaining axis is the in-plane transverse direction.
 
 ASSUMPTIONS (quote these IDs in the report, with result / validity / conservatism)
-  A1  The panel is attached by N_FLANGES = 2 flanges whose centre-planes are D_COUPLE
-      apart along the hinge axis. Forces are shared equally; the moment about the axis
-      perpendicular to the hinge and to y is reacted as a force couple (F1 = M / d).
+  A1  Configuration from 4.2 (Table 2.2): N_LUGS = 2 double lugs (2 flanges each, gap
+      H_GAP), with lug centres D_LUGS apart along the hinge (x) axis. Forces are shared
+      equally over all 4 flanges; the moments about z and y are reacted as force couples
+      between the two lugs (F1 = M / D_LUGS per lug, half of that per flange).
   A2  The moment about the hinge axis itself is carried by the attachment (brief, 4.1).
   A3  Load components are taken as absolute values, so both load directions are
       covered (envelope). Compressive axial load is treated like tension (conservative).
@@ -43,16 +44,21 @@ ASSUMPTIONS (quote these IDs in the report, with result / validity / conservatis
       not apply; Note 3 (K_br <= 2.0) applies for aluminium plate >= 0.5 in thick.
   A9  Out-of-plane load is at least 10 % of P (brief). Root of the flange is checked
       as a cantilever under combined axial + in-plane + out-of-plane bending.
-  A10 Pin is in double shear (double lug with the panel fitting in between).
+  A10 Pin is in double shear (each double lug holds the panel fitting between its two
+      flanges), so each shear plane carries one flange load.
   A11 Bruhn chart values were digitised from the scanned appendix (accuracy roughly
-      +/- 0.02-0.03). In Fig D1.12 the curves 2/3 overlap beyond W/D = 3.6; curve 2 is
-      taken as the lower of the two branches (conservative).
+      +/- 0.02-0.03). In Fig D1.12 curves 2 and 3 cross near W/D = 3.6-4.2 and the scan
+      cannot show which branch is which; curve 2 is taken as the straight middle line.
+      The final designs have W/D <= 3.6 (or use curve 1), so this does not affect them.
   A12 Room-temperature allowables (Bruhn charts are RT only). Set strength_factor per
       load case to F(T)/F(RT) for hot in-orbit cases at Mercury.
   A13 Distance from hole centre to the backplate is L = max(L_ROOT_MIN, e), so there is
       at least as much material below the hole as above it.
   A14 The brief only requires the 10 % P out-of-plane load when Fx/Fz = 0; here the
       larger of the actual load and 10 % P is used (covers misalignment, conservative).
+  A15 Pin shear yield strength F_sy = F_ty / sqrt(3) = 0.577 F_ty (von Mises, pure
+      shear); pin bending (Bruhn D1.14) is not checked.
+  A16 The two lugs must not overlap: D_LUGS >= 2 t1 + H_GAP (checked per design).
 """
 
 import numpy as np
@@ -69,13 +75,15 @@ F_transferburn = np.array([0.29, 0.0, 0.0])
 F_micrometeoroid = np.array([0.0, 0.0, 23.0])
 F_actuation = np.array([7.46, 0.0, 3.71])
 
+# NOTE: these sums add loads from different mission phases (they never act together);
+# for information only - the design uses LOAD_CASES below.
 F_resultant = F_prelaunch + F_dynamiclaunch + F_transferburn + F_micrometeoroid + F_actuation
 print("Total resultant forces: ", F_resultant)
 
 M_prelaunch = np.array([0.0, 0.0, 707.3])
 M_dynamiclaunch = np.array([1274.02, 0.0, -4246.75])
 M_transferburn = np.array([0.0, 0.0, -0.5365])
-M_micrometeoroid = np.array([44.75, 42.55, 0.0])
+M_micrometeoroid = np.array([42.55, 44.75, 0.0])   # report Table 1.1: Mx = 42.55 (= 23 N x 1.85 m), My = 44.75
 M_actuation = np.array([9.72, 11.15, 41.26])
 
 M_resultant = M_prelaunch + M_dynamiclaunch + M_transferburn + M_micrometeoroid + M_actuation
@@ -100,10 +108,14 @@ LOAD_CASES = [
 ]
 
 # --- Attachment configuration (from 4.2) ----------------------------------------
-HINGE_AXIS = "x"      # axis of the pin / hinge: "x" or "z"  <-- CHECK against your 4.2
-N_FLANGES = 2         # flanges sharing the load (double lug = 2)
-D_COUPLE = 0.1       # [m] distance between the flanges' centre-planes (couple arm) <-- your h + t  ### Initial guess of optimization program ###
-L_ROOT_MIN = 0.020    # [m] hole centre to backplate (from your drawing); A13 uses max(L, e)  ### Initial guess of optimization program ###
+HINGE_AXIS = "x"      # pin along x: report Fig 1.1b (flanges separated along x by h)
+N_LUGS = 2            # report Table 2.2: two double lugs
+FLANGES_PER_LUG = 2   # double lug
+N_FLANGES = N_LUGS * FLANGES_PER_LUG
+H_GAP = 0.031         # [m] gap between the two flanges of one lug: 30 mm panel + 1 mm clearance (report 4.2)
+D_LUGS = 0.10         # [m] distance between the centres of the two lugs (couple arm)
+                      #     NOT in the report yet - fixed input, not optimised. Choose it in 4.2.
+L_ROOT_MIN = 0.020    # [m] hole centre to backplate (from your drawing); fixed input, A13 uses max(L, e)
 
 # --- Safety factors -----------------------------------------------------------------
 # ECSS-E-ST-32-10 (metallic parts, verification by analysis only): FOSY 1.25, FOSU 2.0.
@@ -151,7 +163,9 @@ PIN = dict(name="Ti-6Al-4V", Fty=880e6, Fsu=550e6)
 KT_WD = np.array([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0])
 KT = {
     "1": np.array([1.00, 0.99, 0.97, 0.95, 0.93, 0.912, 0.89, 0.85, 0.77]),
-    "2": np.array([1.00, 0.98, 0.947, 0.909, 0.87, 0.845, 0.80, 0.71, 0.69]),
+    "2": np.array([1.00, 0.98, 0.947, 0.909, 0.87, 0.845, 0.81, 0.775, 0.73]),
+    # conservative alternative if curve 2 is the branch that drops after W/D = 3.6 (A11):
+    # "2": np.array([1.00, 0.98, 0.947, 0.909, 0.87, 0.845, 0.80, 0.71, 0.69]),
     "4": np.array([1.00, 0.955, 0.90, 0.848, 0.80, 0.765, 0.73, 0.71, 0.69]),
 }
 
@@ -247,12 +261,18 @@ def by_thickness(table, t, func, *args):
 AX = {"x": 0, "y": 1, "z": 2}
 
 
-def flange_loads(F, M, hinge=HINGE_AXIS, n=N_FLANGES, d=D_COUPLE):
+def flange_loads(F, M, hinge=None, n_lugs=None, n_fl=None, d=None):
     """Limit loads on the most loaded flange: axial (y), in-plane transverse, out-of-plane."""
+    hinge = HINGE_AXIS if hinge is None else hinge
+    n_lugs = N_LUGS if n_lugs is None else n_lugs
+    n_fl = FLANGES_PER_LUG if n_fl is None else n_fl
+    d = D_LUGS if d is None else d
+    n = n_lugs * n_fl                                # total number of flanges
     h = AX[hinge]
     q = AX["z"] if hinge == "x" else AX["x"]       # in-plane transverse axis
-    P_ax = abs(F[1]) / n + abs(M[q]) / d             # force + couple from moment about q  (A1)
-    P_tr = abs(F[q]) / n + abs(M[1]) / d             # force + couple from torsion about y
+    # A1: forces shared by all flanges; moment couple F1 = M/d per lug, split over its flanges
+    P_ax = abs(F[1]) / n + abs(M[q]) / d / n_fl      # force + couple from moment about q
+    P_tr = abs(F[q]) / n + abs(M[1]) / d / n_fl      # force + couple from torsion about y
     P_oop = abs(F[h]) / n                            # along the pin -> flange bending
     P = np.hypot(P_ax, P_tr)
     P_oop = max(P_oop, 0.1 * P)                      # A14 / brief: at least 10 % of P
@@ -279,6 +299,7 @@ def evaluate(mat, D, t, eD, cases):
     WD, tD, Dt = w / D, t / D, D / t
 
     valid = (tD >= 0.06) & (Dt <= 30) & (WD <= 5.0) & (WD >= 1.0) & (eD >= E_D_MIN - 1e-9)
+    valid &= D_LUGS >= FLANGES_PER_LUG * t + H_GAP      # A16: lugs must not overlap
 
     # --- efficiency factors ---
     Kt = by_thickness(mat["kt_curve"], t, k_t, WD)
@@ -342,7 +363,8 @@ def run(verbose=True):
 
     if verbose:
         print("=" * 85)
-        print(f"Hinge axis: {HINGE_AXIS}   flanges: {N_FLANGES}   couple arm d = {D_COUPLE*1e3:.0f} mm")
+        print(f"Hinge axis: {HINGE_AXIS}   {N_LUGS} lugs x {FLANGES_PER_LUG} flanges, gap h = {H_GAP*1e3:.0f} mm, "
+              f"lug spacing d = {D_LUGS*1e3:.0f} mm")
         print(f"FOS_Y = {FOS_Y}, FOS_U = {FOS_U}, fitting factor = {FITTING}")
         print("Limit loads on the most loaded flange:")
         print(f"  {'case':10s}{'P_ax [N]':>11s}{'P_tr [N]':>11s}{'P [N]':>11s}"
