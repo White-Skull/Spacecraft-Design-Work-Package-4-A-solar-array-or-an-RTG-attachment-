@@ -3,6 +3,8 @@
 Only meaningful for designs where every flag passed.
 """
 
+from design import LugDesign
 
-def run(d):
+
+def run(d: LugDesign):
     d.score = 57
