@@ -107,3 +107,34 @@ bearing_stress_3 = P_3/(D_3*t_2)
 bearing_stress_4 = P_4/(D_4*t_2)
 
 SF = 1.5 # test number, not real, to be corrected
+Fty=503 # in MPa
+
+MS_1 = Fty / (SF * bearing_stress_1) - 1
+MS_2 = Fty / (SF * bearing_stress_2) - 1
+MS_3 = Fty / (SF * bearing_stress_3) - 1
+MS_4 = Fty / (SF * bearing_stress_4) - 1
+
+print("\nTASK 4.7 RESULTS")
+
+print(f"Fastener 1: Bearing stress = {bearing_stress_1:.3f} MPa, MS = {MS_1:.3f}")
+print(f"Fastener 2: Bearing stress = {bearing_stress_2:.3f} MPa, MS = {MS_2:.3f}")
+print(f"Fastener 3: Bearing stress = {bearing_stress_3:.3f} MPa, MS = {MS_3:.3f}")
+print(f"Fastener 4: Bearing stress = {bearing_stress_4:.3f} MPa, MS = {MS_4:.3f}")
+
+# Determine whether each fastener passes
+print("\nBEARING FAILURE CHECK")
+
+print("Fastener 1:", "PASS" if MS_1 >= 0 else "FAIL")
+print("Fastener 2:", "PASS" if MS_2 >= 0 else "FAIL")
+print("Fastener 3:", "PASS" if MS_3 >= 0 else "FAIL")
+print("Fastener 4:", "PASS" if MS_4 >= 0 else "FAIL")
+
+# Find critical fastener
+MS_min = min(MS_1, MS_2, MS_3, MS_4)
+
+print(f"\nMinimum margin of safety = {MS_min:.3f}")
+
+if MS_min >= 0:
+    print("BACKPLATE PASSES BEARING CHECK")
+else:
+    print("BACKPLATE FAILS BEARING CHECK")
