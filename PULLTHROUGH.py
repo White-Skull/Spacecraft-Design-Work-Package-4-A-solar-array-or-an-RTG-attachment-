@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 
-Fy = 2000.0
+Fy = 688.67
 Mz = 300.0
 load_factor = 1.0
 
