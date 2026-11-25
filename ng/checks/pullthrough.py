@@ -1,14 +1,15 @@
 """Pullthrough checks
 """
 import math
+import numpy as np
+from design import LugDesign
 
 
-def run(d):
-    #ALL VALUES RN ARE PLACEHOLDERS, THEY DO NOT MATCH OUR DESIGN, PLEASE CHANGE ONCE WEE HAVE THE DESIGN
-    import numpy as np
+def run(d: LugDesign):
+    #TODO: get all values from d instead of hardcoding
 
-    Fy = 688.67
-    Mz = -4246.75
+    Fy = d.Fy_n
+    Mz = d.Mz_nmm
     load_factor = 1.0
 
     coordinates = np.array ([
@@ -18,15 +19,15 @@ def run(d):
         [0.1, 0.1]])
     nf = len(coordinates)
 
-    D2 = 0.006            # Fastener diameter [m]
+    D2 = d.bolt_diameter_mm * 0.001     # Fastener diameter [m]
     Dfi_2 = 0.006        # Inboard diameter, lug side
     Dfi_3 = 0.006        # Inboard diameter, wall side
     Dfo_2 = 0.012        # Outer head diameter
     Dfo_3 = 0.012        # Outer nut diameter
 
     # Thicknesses (m)
-    t2 = 0.004           # Lug backplate
-    t3 = 0.003           # Spacecraft wall
+    t2 = d.lug_thickness_mm * 0.001     # Lug backplate
+    t3 = d.wall_thickness_mm * 0.001    # Spacecraft wall
 
     # Example material tensile yield strengths (Pa)
     sigma_y2 = 270e6

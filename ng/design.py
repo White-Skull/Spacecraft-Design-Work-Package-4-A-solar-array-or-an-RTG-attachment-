@@ -64,7 +64,7 @@ class LugDesign:
 
     # INPUTS: loads, environment, policy (applied at plate centre)
     Fx_n: float = _in(800.0, "N")      # in-plane
-    Fy_n: float = _in(2000.0, "N")     # normal to wall (positive = pull-off)
+    Fy_n: float = _in(1000.0, "N")     # normal to wall (positive = pull-off)
     Fz_n: float = _in(1500.0, "N")     # in-plane
     Mx_nmm: float = _in(20_000.0, "N*mm")  # bending about x (out of plane)
     My_nmm: float = _in(15_000.0, "N*mm")  # bending about y (out of plane)
