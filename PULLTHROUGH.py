@@ -1,5 +1,4 @@
 #ALL VALUES RN ARE PLACEHOLDERS, THEY DO NOT MATCH OUR DESIGN, PLEASE CHANGE ONCE WEE HAVE THE DESIGN
-import math
 import numpy as np
 
 
@@ -8,10 +7,10 @@ Mz = -4246.75
 load_factor = 1.0
 
 coordinates = np.array ([
-    [-1, -1],
-    [-1, 1],
-    [1, -1],
-    [1, 1]])
+    [-0.1, -0.1],
+    [-0.1, 0.1],
+    [0.1, -0.1],
+    [0.1, 0.1]])
 nf = len(coordinates)
 
 D2 = 0.005            # Fastener diameter [m]
